@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "173777639539",
+    "project_id": "example-6daae",
+    "storage_bucket": "example-6daae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:173777639539:android:4b571d315148e305efb206",
+        "android_client_info": {
+          "package_name": "com.rollcake.firebase_example"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7ShaSYlrIl6Ov7gZPA1aVj2-pDi0Qz6g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
