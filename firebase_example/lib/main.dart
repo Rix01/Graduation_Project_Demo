@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_example/database/add_data.dart';
 import 'package:firebase_example/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -23,10 +24,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Voice Upload App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      initialRoute: '/',
+      routes: {
+        '/add': (context) => const AddData(),
+      },
       home: const HomeScreen(),
     );
   }

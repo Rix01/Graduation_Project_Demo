@@ -4,6 +4,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_example/models/sendaudio.dart';
 
+// ignore: constant_identifier_names
 const String SENDAUDIO_COLLECTION_REF = "send_audios";
 
 class DatabaseService {
