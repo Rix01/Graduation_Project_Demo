@@ -63,7 +63,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   print('파일 이름 : ${file.name}');
                   print('파일 경로 : ${file.path}');
                   // 업로드 작업 생성!!
-                  // UploadTask는 Firestore에 올리는 건가
                   FirebaseStorage storage = FirebaseStorage.instance;
                   Reference ref = storage.ref("input/${file.name}");
                   Task task = ref.putFile(File(file.path!));
@@ -84,25 +83,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> uploadFile(String? filePath, String fileName) async {
-    // Firebase Storage 인스턴스 생성
-    final storage = FirebaseStorage.instance;
-
-    // 파일 참조 만들기
-    final ref = storage.ref().child(fileName);
-
-    // 파일 업로드
-    final task = ref.putFile(File(filePath!));
-
-    // 업로드 진행률 모니터링 (옵션)
-    task.snapshotEvents.listen((snapshot) {
-      print('Progress: ${snapshot.bytesTransferred} / ${snapshot.totalBytes}');
-    });
-
-    // 업로드 완료
-    await task.whenComplete(() => print('Upload complete'));
   }
 
   void openFile(PlatformFile file) {

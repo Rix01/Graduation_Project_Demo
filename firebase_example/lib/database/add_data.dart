@@ -1,4 +1,8 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_example/services/database_service.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 class AddData extends StatefulWidget {
@@ -15,6 +19,16 @@ class _AddDataState extends State<AddData> {
 
   TextEditingController speakerNumController =
       TextEditingController(); // 텍스트 필드 컨트롤러
+
+  addData(String input, String language, int speaker) async {
+    FirebaseFirestore.instance.collection("send_audios").doc().set({
+      "inputPath": input,
+      "selecLang": language,
+      "speakerNum": speaker
+    }).then((value) {
+      print("데이터가 전송되었습니다!");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,24 +79,26 @@ class _AddDataState extends State<AddData> {
                   ),
                   const SizedBox(width: 30),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      // 음성 파일 경로 가져오기
+                      FirebaseStorage storage = FirebaseStorage.instance;
+                      final ref = storage.ref("input");
+                      final listResult = await ref.list();
+
+                      // 최근 업로드한 음성 파일 경로 얻기
+                      final recentFileRef = listResult.items.first;
+                      final recentFileURL =
+                          await recentFileRef.getDownloadURL();
+                      print("최근 파일 경로: $recentFileURL");
+
                       // 텍스트 필드에서 숫자 가져오기
-                      String number = speakerNumController.text;
+                      int speakerNum = int.parse(speakerNumController.text);
+
+                      addData(recentFileURL, selectedLanguage, speakerNum);
+
                       // 선택한 언어와 숫자 출력
                       print('선택한 언어: $selectedLanguage');
-                      print('입력한 숫자: $number');
-                      // 여기에 필요한 로직 추가
-
-                      // speakerNum 값을 정수로 변환
-                      int speakerNum =
-                          int.tryParse(number) ?? 0; // 정수로 변환할 수 없는 경우 0으로 설정
-
-                      // Firebase에 데이터 저장
-                      _databaseService.saveAudioInfo(
-                        inputPath: "", // 파일 업로드 후의 경로를 여기에 대입
-                        selecLang: selectedLanguage,
-                        speakerNum: speakerNum,
-                      );
+                      print('입력한 숫자: $speakerNum');
                     },
                     child: const Text("전송"),
                   ),
