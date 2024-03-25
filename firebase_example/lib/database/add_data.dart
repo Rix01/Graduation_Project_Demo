@@ -1,7 +1,7 @@
-import 'dart:math';
+// ignore_for_file: avoid_print
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_example/services/database_service.dart';
+// import 'package:firebase_example/services/database_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
@@ -13,15 +13,13 @@ class AddData extends StatefulWidget {
 }
 
 class _AddDataState extends State<AddData> {
-  final DatabaseService _databaseService = DatabaseService();
-
   String selectedLanguage = '한국어'; // 기본 선택 언어
 
   TextEditingController speakerNumController =
       TextEditingController(); // 텍스트 필드 컨트롤러
 
   addData(String input, String language, int speaker) async {
-    FirebaseFirestore.instance.collection("send_audios").doc().set({
+    FirebaseFirestore.instance.collection("audio_data").doc().set({
       "inputPath": input,
       "selecLang": language,
       "speakerNum": speaker

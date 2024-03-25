@@ -3,7 +3,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_example/services/database_service.dart';
+// import 'package:firebase_example/services/database_service.dart';
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +17,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final DatabaseService _databaseService = DatabaseService();
-
   String selectedLanguage = '한국어'; // 기본 선택 언어
 
   TextEditingController speakerNumController =
@@ -46,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               "서버에 올릴 음성 파일을 선택하세요",
               style: TextStyle(fontSize: 15),
             ),
@@ -63,12 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   print('파일 이름 : ${file.name}');
                   print('파일 경로 : ${file.path}');
                   // 업로드 작업 생성!!
-                  FirebaseStorage storage = FirebaseStorage.instance;
-                  Reference ref = storage.ref("input/${file.name}");
-                  Task task = ref.putFile(File(file.path!));
-
-                  // 업로드 완료
-                  await task.whenComplete(() => print("업로드 성공!!!!"));
+                  await uploadFile(file);
 
                   // 파일 재생인데 지금은 불필요 해서 주석 처리.
                   // openFile(file);
@@ -87,5 +80,32 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void openFile(PlatformFile file) {
     OpenFile.open(file.path!);
+  }
+
+  Future<void> uploadFile(PlatformFile file) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    Reference ref = storage.ref("input/${file.name}");
+
+    // 파일 이름 중복 체크
+    String fileName = file.name;
+    int count = 1;
+    try {
+      while (true) {
+        await ref.getDownloadURL(); // 파일이 존재하는지 확인
+        // 파일이 존재하면 파일 이름 변경
+        fileName =
+            '${file.name.split('.').first}($count).${file.name.split('.').last}';
+        ref = storage.ref("input/$fileName");
+        count++;
+      }
+    } catch (e) {
+      // 파일이 존재하지 않을 때 예외 처리
+      print("파일이 존재하지 않습니다.");
+    }
+
+    Task task = ref.putFile(File(file.path!));
+
+    // 업로드 완료
+    await task.whenComplete(() => print("업로드 성공!!!!!"));
   }
 }
