@@ -18,11 +18,14 @@ class _AddDataState extends State<AddData> {
   TextEditingController speakerNumController =
       TextEditingController(); // 텍스트 필드 컨트롤러
 
+  DateTime currentTime = DateTime.now();
+
   addData(String input, String language, int speaker) async {
     FirebaseFirestore.instance.collection("audio_data").doc().set({
       "inputPath": input,
       "selecLang": language,
-      "speakerNum": speaker
+      "speakerNum": speaker,
+      "uploadTime": currentTime, // 현재 시간을 업로드 시간으로 설정
     }).then((value) {
       print("데이터가 전송되었습니다!");
     });
