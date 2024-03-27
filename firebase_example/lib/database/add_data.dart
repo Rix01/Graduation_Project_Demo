@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_example/services/database_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
@@ -22,13 +21,14 @@ class _AddDataState extends State<AddData> {
 
   addData(String input, String language, int speaker) async {
     FirebaseFirestore.instance.collection("audio_data").doc().set({
-      "inputPath": input,
       "selecLang": language,
       "speakerNum": speaker,
       "uploadTime": currentTime, // 현재 시간을 업로드 시간으로 설정
-    }).then((value) {
-      print("데이터가 전송되었습니다!");
-    });
+    }).then(
+      (value) {
+        print("데이터가 전송되었습니다!");
+      },
+    );
   }
 
   @override
@@ -61,21 +61,19 @@ class _AddDataState extends State<AddData> {
             const SizedBox(height: 20),
             Container(
               padding: const EdgeInsets.only(left: 25, right: 25),
-              child: Row(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: SizedBox(
-                      width: 100,
-                      height: 40,
-                      child: TextField(
-                        controller: speakerNumController,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          labelText: '화자 수를 입력하세요',
-                          border: OutlineInputBorder(),
-                        ),
-                        style: const TextStyle(fontSize: 14),
+                  SizedBox(
+                    width: 100,
+                    height: 40,
+                    child: TextField(
+                      controller: speakerNumController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: '화자 수를 입력하세요',
+                        border: OutlineInputBorder(),
                       ),
+                      style: const TextStyle(fontSize: 14),
                     ),
                   ),
                   const SizedBox(width: 30),
