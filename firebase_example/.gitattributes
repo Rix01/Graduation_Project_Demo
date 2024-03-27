@@ -1,6 +1,2 @@
-# Do not detect
-*.cc -linguist-detectable
-*.cpp -linguist-detectable
-
-# Detect
-*.dart linguist-detectable
+* linguist-vendored
+*.dart linguist-vendored=false
