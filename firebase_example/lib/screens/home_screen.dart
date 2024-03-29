@@ -27,17 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   DateTime currentTime = DateTime.now();
 
-  addData(String input, String language, int speaker) async {
-    FirebaseFirestore.instance.collection("audio_data").doc(file!.name).update({
-      "selecLang": language,
-      "speakerNum": speaker,
-      "uploadTime": currentTime, // 현재 시간을 업로드 시간으로 설정
-    }).then(
-      (value) {
-        print("데이터가 전송되었습니다!");
-      },
-    );
-  }
+  late String fileName, downloadURL;
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.only(
+                    padding: const EdgeInsets.only(
                       left: 20,
                     ),
                     child: TextField(
@@ -175,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Reference ref = storage.ref("input/${file.name}");
 
     // 파일 이름 중복 체크
-    String fileName = file.name;
+    fileName = file.name;
     int count = 1;
     try {
       while (true) {
@@ -199,16 +189,30 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // 업로드 이후 Firestore에 파일 이름 추가
     // 업로드 완료 후 Firestore에 파일 정보 추가
-    String downloadURL = await snapshot.ref.getDownloadURL();
-    addFileInfoToFirestore(fileName, downloadURL);
+    downloadURL = await snapshot.ref.getDownloadURL();
+    //addFileInfoToFirestore(fileName, downloadURL);
 
     print("업로드 성공!!!!!");
   }
 
-  void addFileInfoToFirestore(String fileName, String downloadURL) {
+  addData(String input, String language, int speaker) async {
     FirebaseFirestore.instance.collection("audio_data").doc(fileName).set({
       "fileName": fileName,
-      "downloadURL": downloadURL,
+      "inputPath": downloadURL,
+      "selecLang": language,
+      "speakerNum": speaker,
+      "uploadTime": currentTime, // 현재 시간을 업로드 시간으로 설정
+    }).then(
+      (value) {
+        print("데이터가 전송되었습니다!");
+      },
+    );
+  }
+
+  void addFileInfoToFirestore(String fileName, String downloadURL) {
+    FirebaseFirestore.instance.collection("audio_data").doc(file!.name).set({
+      "fileName": fileName,
+      "inputPath": downloadURL,
       // 추가적으로 필요한 정보가 있으면 여기에 추가할 수 있습니다.
     }).then((value) {
       print("파일 정보가 Firestore에 추가되었습니다.");
